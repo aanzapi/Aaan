@@ -1,14 +1,16 @@
--- // Advanced GUI by AanZAPI (Final Update)
+-- // Advanced GUI by AanZAPI (Final Update + Checkpoint Page)
 -- Bisa digeser, ada tombol close (toggle kecil tetap ada)
 -- Fly controllable (analog untuk maju mundur, tombol naik/turun ditekan lama biar smooth)
 -- Atur kecepatan fly
 -- Teleport player list
+-- Checkpoint Menu Page
 
 -- Services
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
 
 -- ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
@@ -37,6 +39,17 @@ MainFrame.Draggable = true
 MainFrame.Visible = false
 MainFrame.Parent = ScreenGui
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+
+-- Page 2 Frame (Checkpoint)
+local CheckpointFrame = Instance.new("Frame")
+CheckpointFrame.Size = UDim2.new(0, 250, 0, 400)
+CheckpointFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+CheckpointFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+CheckpointFrame.Active = true
+CheckpointFrame.Draggable = true
+CheckpointFrame.Visible = false
+CheckpointFrame.Parent = ScreenGui
+Instance.new("UICorner", CheckpointFrame).CornerRadius = UDim.new(0, 10)
 
 -- Toggle logic
 ToggleBtn.MouseButton1Click:Connect(function()
@@ -71,7 +84,7 @@ end)
 local FlyBtn = Instance.new("TextButton")
 FlyBtn.Size = UDim2.new(0.9, 0, 0, 40)
 FlyBtn.Position = UDim2.new(0.05, 0, 0.15, 0)
-FlyBtn.Text = "✈️"
+FlyBtn.Text = "✈️ Fly"
 FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 FlyBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 FlyBtn.Font = Enum.Font.SourceSansBold
@@ -107,7 +120,7 @@ local SpeedLabel = Instance.new("TextLabel")
 SpeedLabel.Size = UDim2.new(0.9, 0, 0, 25)
 SpeedLabel.Position = UDim2.new(0.05, 0, 0.42, 0)
 SpeedLabel.BackgroundTransparency = 1
-SpeedLabel.Text = "⚡ Speed: 100"
+SpeedLabel.Text = "⚡ Speed: 50"
 SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 SpeedLabel.Font = Enum.Font.SourceSansBold
 SpeedLabel.TextSize = 16
@@ -135,7 +148,7 @@ MinusBtn.TextSize = 14
 MinusBtn.Parent = MainFrame
 Instance.new("UICorner", MinusBtn).CornerRadius = UDim.new(0, 6)
 
--- Dropdown Teleport
+-- Teleport Menu
 local DropDown = Instance.new("TextButton")
 DropDown.Size = UDim2.new(0.9, 0, 0, 40)
 DropDown.Position = UDim2.new(0.05, 0, 0.6, 0)
@@ -158,7 +171,6 @@ ListFrame.Visible = false
 ListFrame.Parent = MainFrame
 Instance.new("UICorner", ListFrame).CornerRadius = UDim.new(0, 6)
 
--- Refresh list player
 local function refreshPlayers()
     for _,child in pairs(ListFrame:GetChildren()) do
         if child:IsA("TextButton") then child:Destroy() end
@@ -186,10 +198,90 @@ end
 Players.PlayerAdded:Connect(refreshPlayers)
 Players.PlayerRemoving:Connect(refreshPlayers)
 refreshPlayers()
-
 DropDown.MouseButton1Click:Connect(function()
     ListFrame.Visible = not ListFrame.Visible
 end)
+
+-- Tombol ke Page 2
+local CheckBtn = Instance.new("TextButton")
+CheckBtn.Size = UDim2.new(0.9, 0, 0, 40)
+CheckBtn.Position = UDim2.new(0.05, 0, 0.87, 0)
+CheckBtn.Text = "⛰️ Checkpoints"
+CheckBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CheckBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+CheckBtn.Font = Enum.Font.SourceSansBold
+CheckBtn.TextSize = 18
+CheckBtn.Parent = MainFrame
+Instance.new("UICorner", CheckBtn).CornerRadius = UDim.new(0, 6)
+
+CheckBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    CheckpointFrame.Visible = true
+end)
+
+-- =======================
+-- PAGE 2 CHECKPOINT MENU
+-- =======================
+
+local Title2 = Instance.new("TextLabel")
+Title2.Size = UDim2.new(1, -40, 0, 30)
+Title2.BackgroundTransparency = 1
+Title2.Text = " ⛰️ Checkpoints"
+Title2.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title2.Font = Enum.Font.SourceSansBold
+Title2.TextSize = 18
+Title2.Parent = CheckpointFrame
+
+local BackBtn = Instance.new("TextButton")
+BackBtn.Size = UDim2.new(0, 30, 0, 30)
+BackBtn.Position = UDim2.new(1, -30, 0, 0)
+BackBtn.Text = "🔙"
+BackBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+BackBtn.Font = Enum.Font.SourceSansBold
+BackBtn.TextSize = 16
+BackBtn.BackgroundTransparency = 1
+BackBtn.Parent = CheckpointFrame
+BackBtn.MouseButton1Click:Connect(function()
+    CheckpointFrame.Visible = false
+    MainFrame.Visible = true
+end)
+
+-- ScrollingFrame list checkpoints
+local CPList = Instance.new("ScrollingFrame")
+CPList.Size = UDim2.new(0.9, 0, 0.85, 0)
+CPList.Position = UDim2.new(0.05, 0, 0.12, 0)
+CPList.CanvasSize = UDim2.new(0,0,0,0)
+CPList.BackgroundColor3 = Color3.fromRGB(30,30,30)
+CPList.ScrollBarThickness = 4
+CPList.Parent = CheckpointFrame
+Instance.new("UICorner", CPList).CornerRadius = UDim.new(0, 6)
+
+-- Refresh checkpoints
+local function refreshCheckpoints()
+    for _,child in pairs(CPList:GetChildren()) do
+        if child:IsA("TextButton") then child:Destroy() end
+    end
+    local y = 0
+    for _,part in pairs(Workspace:GetDescendants()) do
+        if part:IsA("BasePart") and string.find(part.Name:lower(),"checkpoint") then
+            local Btn = Instance.new("TextButton")
+            Btn.Size = UDim2.new(1, -5, 0, 30)
+            Btn.Position = UDim2.new(0, 0, 0, y)
+            Btn.Text = part.Name
+            Btn.TextColor3 = Color3.fromRGB(255,255,255)
+            Btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+            Btn.Parent = CPList
+            y = y + 35
+            Btn.MouseButton1Click:Connect(function()
+                if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+                    LP.Character.HumanoidRootPart.CFrame = part.CFrame + Vector3.new(0,3,0)
+                end
+            end)
+        end
+    end
+    CPList.CanvasSize = UDim2.new(0,0,0,y)
+end
+refreshCheckpoints()
 
 -- Fly System
 local flying = false
@@ -230,18 +322,18 @@ DownBtn.MouseButton1Up:Connect(function() downHeld = false end)
 
 -- Speed control
 PlusBtn.MouseButton1Click:Connect(function()
-    speed = speed + 100
+    speed = speed + 10
     SpeedLabel.Text = "⚡ Speed: "..speed
 end)
 MinusBtn.MouseButton1Click:Connect(function()
-    speed = math.max(100, speed - 100)
+    speed = math.max(10, speed - 10)
     SpeedLabel.Text = "⚡ Speed: "..speed
 end)
 
 -- Toggle Fly
 FlyBtn.MouseButton1Click:Connect(function()
     flying = not flying
-    FlyBtn.Text = flying and "✅" or "❎"
+    FlyBtn.Text = flying and "✅ Fly ON" or "❎ Fly OFF"
     flyY = 0
     if flying then
         startFly()
