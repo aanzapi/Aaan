@@ -1,6 +1,10 @@
--- // Advanced GUI by AanZAPI (Modernized)
--- Modern, profesional, dan menarik ✨
+-- // Advanced GUI by AanZAPI (Final Update)
+-- Bisa digeser, ada tombol close (toggle kecil tetap ada)
+-- Fly controllable (analog untuk maju mundur, tombol naik/turun ditekan lama biar smooth)
+-- Atur kecepatan fly
+-- Teleport player list
 
+-- Services
 local Players = game:GetService("Players")
 local LP = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
@@ -12,49 +16,27 @@ ScreenGui.Name = "AanGUI"
 ScreenGui.Parent = LP:WaitForChild("PlayerGui")
 ScreenGui.ResetOnSpawn = false
 
--- Function buat kasih style tombol
-local function styleBtn(btn, radius)
-    btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.Font = Enum.Font.GothamBold
-    btn.AutoButtonColor = true
-    btn.TextScaled = true
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, radius or 8)
-    local stroke = Instance.new("UIStroke", btn)
-    stroke.Thickness = 1
-    stroke.Color = Color3.fromRGB(80,80,80)
-    return btn
-end
-
--- Toggle Button (kecil di sisi layar)
+-- Toggle Button
 local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Size = UDim2.new(0,45,0,45)
-ToggleBtn.Position = UDim2.new(0,12,0.5,-22)
+ToggleBtn.Size = UDim2.new(0,40,0,40)
+ToggleBtn.Position = UDim2.new(0,10,0.5,-20)
 ToggleBtn.Text = "🤖"
-styleBtn(ToggleBtn, 12).Parent = ScreenGui
+ToggleBtn.TextSize = 22
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+ToggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
+ToggleBtn.Parent = ScreenGui
+Instance.new("UICorner",ToggleBtn).CornerRadius = UDim.new(0,10)
 
 -- Main Frame
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 280, 0, 420)
-MainFrame.Position = UDim2.new(0.3, 0, 0.25, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MainFrame.BackgroundTransparency = 0.05
+MainFrame.Size = UDim2.new(0, 250, 0, 400)
+MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Visible = false
 MainFrame.Parent = ScreenGui
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 14)
-local stroke = Instance.new("UIStroke", MainFrame)
-stroke.Thickness = 2
-stroke.Color = Color3.fromRGB(100,100,100)
-
--- Gradient effect
-local grad = Instance.new("UIGradient", MainFrame)
-grad.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(45,45,55)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(25,25,25))
-}
-grad.Rotation = 90
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
 -- Toggle logic
 ToggleBtn.MouseButton1Click:Connect(function()
@@ -63,89 +45,118 @@ end)
 
 -- Title Bar
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -40, 0, 40)
+Title.Size = UDim2.new(1, -40, 0, 30)
 Title.BackgroundTransparency = 1
-Title.Text = "⚡ AanZAPI Control Panel"
+Title.Text = "  AanCode444🔥"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
-Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 18
 Title.Parent = MainFrame
 
 -- Close Button
 local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 35, 0, 35)
-CloseBtn.Position = UDim2.new(1, -38, 0, 3)
-CloseBtn.Text = "✖"
-styleBtn(CloseBtn, 8).Parent = MainFrame
-CloseBtn.TextColor3 = Color3.fromRGB(255,80,80)
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -30, 0, 0)
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+CloseBtn.Font = Enum.Font.SourceSansBold
+CloseBtn.TextSize = 16
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Parent = MainFrame
 CloseBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
 end)
 
 -- Fly Button
 local FlyBtn = Instance.new("TextButton")
-FlyBtn.Size = UDim2.new(0.9, 0, 0, 45)
-FlyBtn.Position = UDim2.new(0.05, 0, 0.13, 0)
-FlyBtn.Text = "🚀 Aktifkan Fly"
-styleBtn(FlyBtn).Parent = MainFrame
+FlyBtn.Size = UDim2.new(0.9, 0, 0, 40)
+FlyBtn.Position = UDim2.new(0.05, 0, 0.15, 0)
+FlyBtn.Text = "✈️"
+FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlyBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+FlyBtn.Font = Enum.Font.SourceSansBold
+FlyBtn.TextSize = 18
+FlyBtn.Parent = MainFrame
+Instance.new("UICorner", FlyBtn).CornerRadius = UDim.new(0, 6)
 
 -- Tombol Naik & Turun
 local UpBtn = Instance.new("TextButton")
-UpBtn.Size = UDim2.new(0.43, 0, 0, 38)
-UpBtn.Position = UDim2.new(0.05, 0, 0.28, 0)
+UpBtn.Size = UDim2.new(0.43, 0, 0, 35)
+UpBtn.Position = UDim2.new(0.05, 0, 0.3, 0)
 UpBtn.Text = "⬆️ Naik"
-styleBtn(UpBtn).Parent = MainFrame
+UpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+UpBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+UpBtn.Font = Enum.Font.SourceSansBold
+UpBtn.TextSize = 16
+UpBtn.Parent = MainFrame
+Instance.new("UICorner", UpBtn).CornerRadius = UDim.new(0, 6)
 
 local DownBtn = Instance.new("TextButton")
-DownBtn.Size = UDim2.new(0.43, 0, 0, 38)
-DownBtn.Position = UDim2.new(0.52, 0, 0.28, 0)
+DownBtn.Size = UDim2.new(0.43, 0, 0, 35)
+DownBtn.Position = UDim2.new(0.52, 0, 0.3, 0)
 DownBtn.Text = "⬇️ Turun"
-styleBtn(DownBtn).Parent = MainFrame
+DownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+DownBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+DownBtn.Font = Enum.Font.SourceSansBold
+DownBtn.TextSize = 16
+DownBtn.Parent = MainFrame
+Instance.new("UICorner", DownBtn).CornerRadius = UDim.new(0, 6)
 
 -- Atur Speed
 local SpeedLabel = Instance.new("TextLabel")
-SpeedLabel.Size = UDim2.new(0.9, 0, 0, 28)
+SpeedLabel.Size = UDim2.new(0.9, 0, 0, 25)
 SpeedLabel.Position = UDim2.new(0.05, 0, 0.42, 0)
 SpeedLabel.BackgroundTransparency = 1
-SpeedLabel.Text = "⚡ Speed: 50"
+SpeedLabel.Text = "⚡ Speed: 100"
 SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-SpeedLabel.Font = Enum.Font.GothamSemibold
+SpeedLabel.Font = Enum.Font.SourceSansBold
 SpeedLabel.TextSize = 16
 SpeedLabel.Parent = MainFrame
 
 local PlusBtn = Instance.new("TextButton")
-PlusBtn.Size = UDim2.new(0.43, 0, 0, 32)
-PlusBtn.Position = UDim2.new(0.05, 0, 0.5, 0)
+PlusBtn.Size = UDim2.new(0.43, 0, 0, 30)
+PlusBtn.Position = UDim2.new(0.05, 0, 0.48, 0)
 PlusBtn.Text = "+ Speed"
-styleBtn(PlusBtn).Parent = MainFrame
+PlusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlusBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+PlusBtn.Font = Enum.Font.SourceSansBold
+PlusBtn.TextSize = 14
+PlusBtn.Parent = MainFrame
+Instance.new("UICorner", PlusBtn).CornerRadius = UDim.new(0, 6)
 
 local MinusBtn = Instance.new("TextButton")
-MinusBtn.Size = UDim2.new(0.43, 0, 0, 32)
-MinusBtn.Position = UDim2.new(0.52, 0, 0.5, 0)
+MinusBtn.Size = UDim2.new(0.43, 0, 0, 30)
+MinusBtn.Position = UDim2.new(0.52, 0, 0.48, 0)
 MinusBtn.Text = "- Speed"
-styleBtn(MinusBtn).Parent = MainFrame
+MinusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinusBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+MinusBtn.Font = Enum.Font.SourceSansBold
+MinusBtn.TextSize = 14
+MinusBtn.Parent = MainFrame
+Instance.new("UICorner", MinusBtn).CornerRadius = UDim.new(0, 6)
 
 -- Dropdown Teleport
 local DropDown = Instance.new("TextButton")
-DropDown.Size = UDim2.new(0.9, 0, 0, 45)
-DropDown.Position = UDim2.new(0.05, 0, 0.62, 0)
-DropDown.Text = "👥 Teleport Menu"
-styleBtn(DropDown).Parent = MainFrame
+DropDown.Size = UDim2.new(0.9, 0, 0, 40)
+DropDown.Position = UDim2.new(0.05, 0, 0.6, 0)
+DropDown.Text = "👤 Teleport Menu"
+DropDown.TextColor3 = Color3.fromRGB(255, 255, 255)
+DropDown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+DropDown.Font = Enum.Font.SourceSansBold
+DropDown.TextSize = 18
+DropDown.Parent = MainFrame
+Instance.new("UICorner", DropDown).CornerRadius = UDim.new(0, 6)
 
 -- Frame List Player
 local ListFrame = Instance.new("ScrollingFrame")
-ListFrame.Size = UDim2.new(0.9, 0, 0, 115)
-ListFrame.Position = UDim2.new(0.05, 0, 0.78, 0)
+ListFrame.Size = UDim2.new(0.9, 0, 0, 110)
+ListFrame.Position = UDim2.new(0.05, 0, 0.75, 0)
 ListFrame.CanvasSize = UDim2.new(0,0,0,0)
-ListFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+ListFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 ListFrame.ScrollBarThickness = 4
 ListFrame.Visible = false
 ListFrame.Parent = MainFrame
-Instance.new("UICorner", ListFrame).CornerRadius = UDim.new(0, 8)
-local lsStroke = Instance.new("UIStroke", ListFrame)
-lsStroke.Thickness = 1
-lsStroke.Color = Color3.fromRGB(60,60,60)
+Instance.new("UICorner", ListFrame).CornerRadius = UDim.new(0, 6)
 
 -- Refresh list player
 local function refreshPlayers()
@@ -156,11 +167,13 @@ local function refreshPlayers()
     for _,plr in pairs(Players:GetPlayers()) do
         if plr ~= LP then
             local Btn = Instance.new("TextButton")
-            Btn.Size = UDim2.new(1, -5, 0, 32)
+            Btn.Size = UDim2.new(1, -5, 0, 30)
             Btn.Position = UDim2.new(0, 0, 0, y)
-            Btn.Text = "📌 "..plr.Name
-            styleBtn(Btn,6).Parent = ListFrame
-            y = y + 36
+            Btn.Text = plr.Name
+            Btn.TextColor3 = Color3.fromRGB(255,255,255)
+            Btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+            Btn.Parent = ListFrame
+            y = y + 35
             Btn.MouseButton1Click:Connect(function()
                 if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
                     LP.Character:WaitForChild("HumanoidRootPart").CFrame = plr.Character.HumanoidRootPart.CFrame + Vector3.new(0,3,0)
@@ -178,7 +191,7 @@ DropDown.MouseButton1Click:Connect(function()
     ListFrame.Visible = not ListFrame.Visible
 end)
 
--- Fly System (logic sama kaya versi kamu, tinggal tempel)
+-- Fly System
 local flying = false
 local speed = 50
 local bv
@@ -217,18 +230,18 @@ DownBtn.MouseButton1Up:Connect(function() downHeld = false end)
 
 -- Speed control
 PlusBtn.MouseButton1Click:Connect(function()
-    speed = speed + 25
+    speed = speed + 100
     SpeedLabel.Text = "⚡ Speed: "..speed
 end)
 MinusBtn.MouseButton1Click:Connect(function()
-    speed = math.max(25, speed - 25)
+    speed = math.max(100, speed - 100)
     SpeedLabel.Text = "⚡ Speed: "..speed
 end)
 
 -- Toggle Fly
 FlyBtn.MouseButton1Click:Connect(function()
     flying = not flying
-    FlyBtn.Text = flying and "🟢 Fly Aktif" or "🔴 Fly Nonaktif"
+    FlyBtn.Text = flying and "✅" or "❎"
     flyY = 0
     if flying then
         startFly()
