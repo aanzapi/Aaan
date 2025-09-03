@@ -1,258 +1,251 @@
--- FINAL SCRIPT AAN HUB
--- Dibuat biar simple, UI bisa digeser + ada tombol Hide/Show
--- Fitur: Fly (naik/turun + atur speed), Teleport ke Player, Kill Player
+-- // Advanced GUI by AanZAPI (Final Update)
+-- Bisa digeser, ada tombol close (toggle kecil tetap ada)
+-- Fly controllable (analog untuk maju mundur, tombol naik/turun ditekan lama biar smooth)
+-- Atur kecepatan fly
+-- Teleport player list
 
--- UI Library sederhana
+-- Services
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AanGUI"
+ScreenGui.Parent = LP:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+-- Toggle Button
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0,40,0,40)
+ToggleBtn.Position = UDim2.new(0,10,0.5,-20)
+ToggleBtn.Text = "#"
+ToggleBtn.TextSize = 22
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+ToggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
+ToggleBtn.Parent = ScreenGui
+Instance.new("UICorner",ToggleBtn).CornerRadius = UDim.new(0,10)
+
+-- Main Frame
 local MainFrame = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local CloseBtn = Instance.new("TextButton")
-local HideBtn = Instance.new("TextButton")
-local FlyBtn = Instance.new("TextButton")
-local FlyUpBtn = Instance.new("TextButton")
-local FlyDownBtn = Instance.new("TextButton")
-local SpeedSlider = Instance.new("TextBox")
-local TeleportDropdown = Instance.new("TextButton")
-local KillDropdown = Instance.new("TextButton")
-local DropdownFrame = Instance.new("Frame")
-local DropdownScrolling = Instance.new("ScrollingFrame")
-
-ScreenGui.Parent = game:GetService("CoreGui")
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
--- MainFrame
-MainFrame.Name = "MainFrame"
-MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-MainFrame.Size = UDim2.new(0, 250, 0, 300)
+MainFrame.Size = UDim2.new(0, 250, 0, 400)
 MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 MainFrame.Active = true
 MainFrame.Draggable = true
-MainFrame.Visible = true
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
--- Title
-Title.Parent = MainFrame
+-- Toggle logic
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
+
+-- Title Bar
+local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -40, 0, 30)
-Title.Position = UDim2.new(0, 0, 0, 0)
-Title.Text = "🔥 AAN HUB 🔥"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.BackgroundTransparency = 1
+Title.Text = "AanCode444🔥"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 18
+Title.Parent = MainFrame
 
--- CloseBtn
-CloseBtn.Parent = MainFrame
+-- Close Button
+local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 30, 0, 30)
 CloseBtn.Position = UDim2.new(1, -30, 0, 0)
 CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
-
--- HideBtn (selalu muncul)
-HideBtn.Parent = ScreenGui
-HideBtn.Size = UDim2.new(0, 50, 0, 25)
-HideBtn.Position = UDim2.new(0, 10, 0.8, 0)
-HideBtn.Text = "Show"
-HideBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-HideBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-HideBtn.Visible = false
-
+CloseBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+CloseBtn.Font = Enum.Font.SourceSansBold
+CloseBtn.TextSize = 16
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Parent = MainFrame
 CloseBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
-    HideBtn.Visible = true
 end)
 
-HideBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = true
-    HideBtn.Visible = false
+-- Fly Button
+local FlyBtn = Instance.new("TextButton")
+FlyBtn.Size = UDim2.new(0.9, 0, 0, 40)
+FlyBtn.Position = UDim2.new(0.05, 0, 0.15, 0)
+FlyBtn.Text = "GA DULU BOY"
+FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlyBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+FlyBtn.Font = Enum.Font.SourceSansBold
+FlyBtn.TextSize = 18
+FlyBtn.Parent = MainFrame
+Instance.new("UICorner", FlyBtn).CornerRadius = UDim.new(0, 6)
+
+-- Tombol Naik & Turun
+local UpBtn = Instance.new("TextButton")
+UpBtn.Size = UDim2.new(0.43, 0, 0, 35)
+UpBtn.Position = UDim2.new(0.05, 0, 0.3, 0)
+UpBtn.Text = "⬆️ Naik"
+UpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+UpBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+UpBtn.Font = Enum.Font.SourceSansBold
+UpBtn.TextSize = 16
+UpBtn.Parent = MainFrame
+Instance.new("UICorner", UpBtn).CornerRadius = UDim.new(0, 6)
+
+local DownBtn = Instance.new("TextButton")
+DownBtn.Size = UDim2.new(0.43, 0, 0, 35)
+DownBtn.Position = UDim2.new(0.52, 0, 0.3, 0)
+DownBtn.Text = "⬇️ Turun"
+DownBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+DownBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+DownBtn.Font = Enum.Font.SourceSansBold
+DownBtn.TextSize = 16
+DownBtn.Parent = MainFrame
+Instance.new("UICorner", DownBtn).CornerRadius = UDim.new(0, 6)
+
+-- Atur Speed
+local SpeedLabel = Instance.new("TextLabel")
+SpeedLabel.Size = UDim2.new(0.9, 0, 0, 25)
+SpeedLabel.Position = UDim2.new(0.05, 0, 0.42, 0)
+SpeedLabel.BackgroundTransparency = 1
+SpeedLabel.Text = "⚡ Speed: 50"
+SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedLabel.Font = Enum.Font.SourceSansBold
+SpeedLabel.TextSize = 16
+SpeedLabel.Parent = MainFrame
+
+local PlusBtn = Instance.new("TextButton")
+PlusBtn.Size = UDim2.new(0.43, 0, 0, 30)
+PlusBtn.Position = UDim2.new(0.05, 0, 0.48, 0)
+PlusBtn.Text = "+ Speed"
+PlusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlusBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+PlusBtn.Font = Enum.Font.SourceSansBold
+PlusBtn.TextSize = 14
+PlusBtn.Parent = MainFrame
+Instance.new("UICorner", PlusBtn).CornerRadius = UDim.new(0, 6)
+
+local MinusBtn = Instance.new("TextButton")
+MinusBtn.Size = UDim2.new(0.43, 0, 0, 30)
+MinusBtn.Position = UDim2.new(0.52, 0, 0.48, 0)
+MinusBtn.Text = "- Speed"
+MinusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinusBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+MinusBtn.Font = Enum.Font.SourceSansBold
+MinusBtn.TextSize = 14
+MinusBtn.Parent = MainFrame
+Instance.new("UICorner", MinusBtn).CornerRadius = UDim.new(0, 6)
+
+-- Dropdown Teleport
+local DropDown = Instance.new("TextButton")
+DropDown.Size = UDim2.new(0.9, 0, 0, 40)
+DropDown.Position = UDim2.new(0.05, 0, 0.6, 0)
+DropDown.Text = "👤 Teleport Menu"
+DropDown.TextColor3 = Color3.fromRGB(255, 255, 255)
+DropDown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+DropDown.Font = Enum.Font.SourceSansBold
+DropDown.TextSize = 18
+DropDown.Parent = MainFrame
+Instance.new("UICorner", DropDown).CornerRadius = UDim.new(0, 6)
+
+-- Frame List Player
+local ListFrame = Instance.new("ScrollingFrame")
+ListFrame.Size = UDim2.new(0.9, 0, 0, 110)
+ListFrame.Position = UDim2.new(0.05, 0, 0.75, 0)
+ListFrame.CanvasSize = UDim2.new(0,0,0,0)
+ListFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+ListFrame.ScrollBarThickness = 4
+ListFrame.Visible = false
+ListFrame.Parent = MainFrame
+Instance.new("UICorner", ListFrame).CornerRadius = UDim.new(0, 6)
+
+-- Refresh list player
+local function refreshPlayers()
+    for _,child in pairs(ListFrame:GetChildren()) do
+        if child:IsA("TextButton") then child:Destroy() end
+    end
+    local y = 0
+    for _,plr in pairs(Players:GetPlayers()) do
+        if plr ~= LP then
+            local Btn = Instance.new("TextButton")
+            Btn.Size = UDim2.new(1, -5, 0, 30)
+            Btn.Position = UDim2.new(0, 0, 0, y)
+            Btn.Text = plr.Name
+            Btn.TextColor3 = Color3.fromRGB(255,255,255)
+            Btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+            Btn.Parent = ListFrame
+            y = y + 35
+            Btn.MouseButton1Click:Connect(function()
+                if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                    LP.Character:WaitForChild("HumanoidRootPart").CFrame = plr.Character.HumanoidRootPart.CFrame + Vector3.new(0,3,0)
+                end
+            end)
+        end
+    end
+    ListFrame.CanvasSize = UDim2.new(0,0,0,y)
+end
+Players.PlayerAdded:Connect(refreshPlayers)
+Players.PlayerRemoving:Connect(refreshPlayers)
+refreshPlayers()
+
+DropDown.MouseButton1Click:Connect(function()
+    ListFrame.Visible = not ListFrame.Visible
 end)
 
---------------------------------------------------------------------
--- FLY SYSTEM
---------------------------------------------------------------------
+-- Fly System
 local flying = false
-local flySpeed = 50
-local player = game.Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
-local bodyVel, bodyGyro
+local speed = 50
+local bv
+local flyY = 0
+local upHeld, downHeld = false, false
 
 local function startFly()
-    if flying then return end
-    flying = true
-    local char = player.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local HRP = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+    if not HRP then return end
+    bv = Instance.new("BodyVelocity")
+    bv.Velocity = Vector3.zero
+    bv.MaxForce = Vector3.new(1e5,1e5,1e5)
+    bv.Parent = HRP
 
-    local hrp = char.HumanoidRootPart
-    bodyVel = Instance.new("BodyVelocity")
-    bodyVel.Velocity = Vector3.new(0,0,0)
-    bodyVel.MaxForce = Vector3.new(1e5,1e5,1e5)
-    bodyVel.Parent = hrp
-
-    bodyGyro = Instance.new("BodyGyro")
-    bodyGyro.CFrame = hrp.CFrame
-    bodyGyro.MaxTorque = Vector3.new(1e5,1e5,1e5)
-    bodyGyro.P = 1e5
-    bodyGyro.Parent = hrp
-
-    -- kontrol analog / WASD
-    game:GetService("RunService").RenderStepped:Connect(function()
-        if flying and bodyVel and bodyGyro then
-            local camCF = workspace.CurrentCamera.CFrame
-            local moveVec = Vector3.new()
-
-            if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-                moveVec = moveVec + camCF.LookVector
+    RunService.RenderStepped:Connect(function()
+        if flying and HRP and bv then
+            local moveDir = LP.Character:FindFirstChild("Humanoid").MoveDirection
+            if upHeld then
+                flyY = speed
+            elseif downHeld then
+                flyY = -speed
+            else
+                flyY = 0
             end
-            if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-                moveVec = moveVec - camCF.LookVector
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-                moveVec = moveVec - camCF.RightVector
-            end
-            if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-                moveVec = moveVec + camCF.RightVector
-            end
-
-            bodyVel.Velocity = moveVec * flySpeed
-            bodyGyro.CFrame = camCF
+            local vel = Vector3.new(moveDir.X*speed, flyY, moveDir.Z*speed)
+            bv.Velocity = vel
         end
     end)
 end
 
-local function stopFly()
-    flying = false
-    if bodyVel then bodyVel:Destroy() bodyVel = nil end
-    if bodyGyro then bodyGyro:Destroy() bodyGyro = nil end
-end
+-- Tombol Naik / Turun logic (hold)
+UpBtn.MouseButton1Down:Connect(function() if flying then upHeld = true end end)
+UpBtn.MouseButton1Up:Connect(function() upHeld = false end)
+DownBtn.MouseButton1Down:Connect(function() if flying then downHeld = true end end)
+DownBtn.MouseButton1Up:Connect(function() downHeld = false end)
 
--- FlyBtn
-FlyBtn.Parent = MainFrame
-FlyBtn.Size = UDim2.new(1, -20, 0, 30)
-FlyBtn.Position = UDim2.new(0, 10, 0, 40)
-FlyBtn.Text = "Fly: OFF"
-FlyBtn.TextColor3 = Color3.fromRGB(255,255,255)
-FlyBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+-- Speed control
+PlusBtn.MouseButton1Click:Connect(function()
+    speed = speed + 50
+    SpeedLabel.Text = "⚡ Speed: "..speed
+end)
+MinusBtn.MouseButton1Click:Connect(function()
+    speed = math.max(50, speed - 50)
+    SpeedLabel.Text = "⚡ Speed: "..speed
+end)
 
+-- Toggle Fly
 FlyBtn.MouseButton1Click:Connect(function()
+    flying = not flying
+    FlyBtn.Text = flying and "TERBANG BOY" or "GA DULU BOY"
+    flyY = 0
     if flying then
-        stopFly()
-        FlyBtn.Text = "Fly: OFF"
-    else
         startFly()
-        FlyBtn.Text = "Fly: ON"
+    else
+        if bv then bv:Destroy() bv = nil end
     end
-end)
-
--- Tombol naik / turun
-FlyUpBtn.Parent = MainFrame
-FlyUpBtn.Size = UDim2.new(0.45, 0, 0, 25)
-FlyUpBtn.Position = UDim2.new(0.05, 0, 0, 80)
-FlyUpBtn.Text = "↑ Naik"
-FlyUpBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
-FlyUpBtn.TextColor3 = Color3.fromRGB(255,255,255)
-
-FlyDownBtn.Parent = MainFrame
-FlyDownBtn.Size = UDim2.new(0.45, 0, 0, 25)
-FlyDownBtn.Position = UDim2.new(0.5, 0, 0, 80)
-FlyDownBtn.Text = "↓ Turun"
-FlyDownBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
-FlyDownBtn.TextColor3 = Color3.fromRGB(255,255,255)
-
-FlyUpBtn.MouseButton1Down:Connect(function()
-    if flying and bodyVel then
-        bodyVel.Velocity = bodyVel.Velocity + Vector3.new(0, flySpeed, 0)
-    end
-end)
-
-FlyDownBtn.MouseButton1Down:Connect(function()
-    if flying and bodyVel then
-        bodyVel.Velocity = bodyVel.Velocity + Vector3.new(0, -flySpeed, 0)
-    end
-end)
-
--- Speed input
-SpeedSlider.Parent = MainFrame
-SpeedSlider.Size = UDim2.new(1, -20, 0, 25)
-SpeedSlider.Position = UDim2.new(0, 10, 0, 115)
-SpeedSlider.PlaceholderText = "Fly Speed (default 50)"
-SpeedSlider.Text = ""
-SpeedSlider.TextColor3 = Color3.fromRGB(255,255,255)
-SpeedSlider.BackgroundColor3 = Color3.fromRGB(40,40,40)
-
-SpeedSlider.FocusLost:Connect(function()
-    local val = tonumber(SpeedSlider.Text)
-    if val then
-        flySpeed = val
-    end
-end)
-
---------------------------------------------------------------------
--- TELEPORT & KILL PLAYER
---------------------------------------------------------------------
-local function refreshPlayerList(action)
-    DropdownScrolling:ClearAllChildren()
-    local y = 0
-    for _,plr in pairs(game.Players:GetPlayers()) do
-        if plr ~= player then
-            local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(1, -10, 0, 25)
-            btn.Position = UDim2.new(0, 5, 0, y)
-            btn.Text = plr.Name
-            btn.TextColor3 = Color3.fromRGB(255,255,255)
-            btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-            btn.Parent = DropdownScrolling
-
-            btn.MouseButton1Click:Connect(function()
-                if action == "teleport" then
-                    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                        player.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame + Vector3.new(0,3,0)
-                    end
-                elseif action == "kill" then
-                    if plr.Character and plr.Character:FindFirstChild("Humanoid") then
-                        plr.Character.Humanoid.Health = 0
-                    end
-                end
-                DropdownFrame.Visible = false
-            end)
-            y = y + 30
-        end
-    end
-end
-
--- DropdownFrame
-DropdownFrame.Parent = MainFrame
-DropdownFrame.Size = UDim2.new(1, -20, 0, 150)
-DropdownFrame.Position = UDim2.new(0, 10, 0, 150)
-DropdownFrame.BackgroundColor3 = Color3.fromRGB(25,25,25)
-DropdownFrame.Visible = false
-
-DropdownScrolling.Parent = DropdownFrame
-DropdownScrolling.Size = UDim2.new(1, 0, 1, 0)
-DropdownScrolling.CanvasSize = UDim2.new(0,0,0,500)
-DropdownScrolling.ScrollBarThickness = 5
-
--- Teleport Dropdown
-TeleportDropdown.Parent = MainFrame
-TeleportDropdown.Size = UDim2.new(1, -20, 0, 25)
-TeleportDropdown.Position = UDim2.new(0, 10, 0, 150)
-TeleportDropdown.Text = "Teleport ke Player"
-TeleportDropdown.BackgroundColor3 = Color3.fromRGB(80,80,80)
-TeleportDropdown.TextColor3 = Color3.fromRGB(255,255,255)
-
-TeleportDropdown.MouseButton1Click:Connect(function()
-    refreshPlayerList("teleport")
-    DropdownFrame.Visible = true
-end)
-
--- Kill Dropdown
-KillDropdown.Parent = MainFrame
-KillDropdown.Size = UDim2.new(1, -20, 0, 25)
-KillDropdown.Position = UDim2.new(0, 10, 0, 180)
-KillDropdown.Text = "Kill Player"
-KillDropdown.BackgroundColor3 = Color3.fromRGB(150,0,0)
-KillDropdown.TextColor3 = Color3.fromRGB(255,255,255)
-
-KillDropdown.MouseButton1Click:Connect(function()
-    refreshPlayerList("kill")
-    DropdownFrame.Visible = true
 end)
