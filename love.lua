@@ -83,7 +83,7 @@ Page2.Visible = false
 
 local NextBtn = Instance.new("TextButton")
 NextBtn.Size = UDim2.new(0, 50, 0, 25)
-NextBtn.Position = UDim2.new(1,-55,1,-25)
+NextBtn.Position = UDim2.new(1,-55,0,2) -- pindah ke atas
 NextBtn.Text = "➡️"
 NextBtn.TextColor3 = Color3.fromRGB(255,255,255)
 NextBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
@@ -92,7 +92,7 @@ Instance.new("UICorner", NextBtn).CornerRadius = UDim.new(0,6)
 
 local BackBtn = Instance.new("TextButton")
 BackBtn.Size = UDim2.new(0, 50, 0, 25)
-BackBtn.Position = UDim2.new(0,5,1,-25)
+BackBtn.Position = UDim2.new(0,5,0,2) -- pindah ke atas
 BackBtn.Text = "⬅️"
 BackBtn.TextColor3 = Color3.fromRGB(255,255,255)
 BackBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
@@ -214,9 +214,20 @@ AutoTeleBtn.Font = Enum.Font.SourceSansBold
 AutoTeleBtn.TextSize = 18
 Instance.new("UICorner", AutoTeleBtn).CornerRadius = UDim.new(0,6)
 
+-- Delete Last Checkpoint
+local DelBtn = Instance.new("TextButton", Page2)
+DelBtn.Size = UDim2.new(0.9,0,0,40)
+DelBtn.Position = UDim2.new(0.05,0,0.29,0)
+DelBtn.Text = "🗑️ Delete Last Checkpoint"
+DelBtn.TextColor3 = Color3.fromRGB(255,255,255)
+DelBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+DelBtn.Font = Enum.Font.SourceSansBold
+DelBtn.TextSize = 18
+Instance.new("UICorner", DelBtn).CornerRadius = UDim.new(0,6)
+
 local CPList = Instance.new("ScrollingFrame", Page2)
-CPList.Size = UDim2.new(0.9,0,0,200)
-CPList.Position = UDim2.new(0.05,0,0.35,0)
+CPList.Size = UDim2.new(0.9,0,0,160)
+CPList.Position = UDim2.new(0.05,0,0.42,0)
 CPList.CanvasSize = UDim2.new(0,0,0,0)
 CPList.BackgroundColor3 = Color3.fromRGB(30,30,30)
 CPList.ScrollBarThickness = 4
@@ -255,6 +266,13 @@ SaveBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+DelBtn.MouseButton1Click:Connect(function()
+    if #checkpoints > 0 then
+        table.remove(checkpoints, #checkpoints)
+        refreshCPList()
+    end
+end)
+
 AutoTeleBtn.MouseButton1Click:Connect(function()
     autoTele = not autoTele
     AutoTeleBtn.Text = autoTele and "🔁 Auto Tele: ON" or "🔁 Auto Tele: OFF"
@@ -266,7 +284,7 @@ AutoTeleBtn.MouseButton1Click:Connect(function()
                     if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
                         LP.Character.HumanoidRootPart.CFrame = pos
                     end
-                    task.wait(2) -- delay tiap teleport
+                    task.wait(2)
                 end
             end
         end)
@@ -343,8 +361,4 @@ local function refreshPlayers()
     ListFrame.CanvasSize = UDim2.new(0,0,0,y)
 end
 Players.PlayerAdded:Connect(refreshPlayers)
-Players.PlayerRemoving:Connect(refreshPlayers)
-refreshPlayers()
-DropDown.MouseButton1Click:Connect(function()
-    ListFrame.Visible = not ListFrame.Visible
-end)
+Players.PlayerRemoving:Connect(refresh
