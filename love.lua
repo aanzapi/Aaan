@@ -3,6 +3,7 @@
 -- Fly controllable (analog untuk maju mundur, tombol naik/turun ditekan lama biar smooth)
 -- Atur kecepatan fly
 -- Teleport player list
+-- Delete Part System
 
 -- Services
 local Players = game:GetService("Players")
@@ -29,7 +30,7 @@ Instance.new("UICorner",ToggleBtn).CornerRadius = UDim.new(0,10)
 
 -- Main Frame
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 250, 0, 400)
+MainFrame.Size = UDim2.new(0, 250, 0, 450)
 MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 MainFrame.Active = true
@@ -189,6 +190,35 @@ refreshPlayers()
 
 DropDown.MouseButton1Click:Connect(function()
     ListFrame.Visible = not ListFrame.Visible
+end)
+
+-- Delete Part Button
+local DeleteBtn = Instance.new("TextButton")
+DeleteBtn.Size = UDim2.new(0.9, 0, 0, 40)
+DeleteBtn.Position = UDim2.new(0.05, 0, 0.9, 0)
+DeleteBtn.Text = "🗑 Delete Part: OFF"
+DeleteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+DeleteBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+DeleteBtn.Font = Enum.Font.SourceSansBold
+DeleteBtn.TextSize = 18
+DeleteBtn.Parent = MainFrame
+Instance.new("UICorner", DeleteBtn).CornerRadius = UDim.new(0, 6)
+
+local deleteMode = false
+local mouse = LP:GetMouse()
+
+DeleteBtn.MouseButton1Click:Connect(function()
+    deleteMode = not deleteMode
+    DeleteBtn.Text = deleteMode and "🗑 Delete Part: ON" or "🗑 Delete Part: OFF"
+end)
+
+mouse.Button1Down:Connect(function()
+    if deleteMode then
+        local target = mouse.Target
+        if target and target:IsDescendantOf(workspace) then
+            target:Destroy()
+        end
+    end
 end)
 
 -- Fly System
